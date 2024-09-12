@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 
 # Cargar el modelo de votación entrenado
-model = joblib.load('voting_model.joblib')  # Asegúrate de que el archivo del modelo esté guardado como .joblib
+model = joblib.load('voting_model.joblib')  # Guarda tu modelo de votación como archivo joblib
 
 # Crear la aplicación Flask
 app = Flask(__name__)
@@ -13,7 +13,7 @@ app = Flask(__name__)
 def predictjson():
     data = request.json  # Recibir los datos en formato JSON
 
-    # Convertir las entradas a un arreglo numpy para procesarlas
+    # Convertir los datos a un array numpy en el formato que el modelo espera
     input_data = np.array([
         data['HomePlanet'],
         data['CryoSleep'],

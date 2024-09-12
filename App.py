@@ -2,28 +2,50 @@ import streamlit as st
 import numpy as np
 import requests
 
-# URL del servidor Flask
-FLASK_API_URL = "http://<tu-servidor>:8080/predictjson"
+# Establecer título y estilo de la página
+st.set_page_config(page_title="Spaceship Titanic - Supervivencia", page_icon="🚀")
 
-# Título de la aplicación
-st.title("Predicción de Supervivencia en el Titanic Espacial")
+# CSS para darle estilo espacial
+page_bg_img = '''
+<style>
+body {
+    background-image: url("https://www.nasa.gov/sites/default/files/thumbnails/image/stsci-h-p2041a-f-3840x2160.png");
+    background-size: cover;
+    color: white;
+}
+h1, h2, h3 {
+    color: #00FF00;
+}
+.stButton>button {
+    background-color: #00FF00;
+    color: black;
+}
+</style>
+'''
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
-# Crear controles de entrada (sliders, selectboxes, etc.)
-home_planet = st.selectbox("Planeta de origen", ["Earth", "Europa", "Mars"])
-cryosleep = st.radio("¿Estaba en Criosueño?", ["Sí", "No"])
-age = st.slider("Edad", 0, 100, 30)
-room_service = st.slider("Room Service", 0, 10000, 0)
-food_court = st.slider("Food Court", 0, 10000, 0)
-shopping_mall = st.slider("Shopping Mall", 0, 10000, 0)
-spa = st.slider("Spa", 0, 10000, 0)
-vr_deck = st.slider("VRDeck", 0, 10000, 0)
-destination = st.selectbox("Destino", ["TRAPPIST-1e", "55 Cancri e", "PSO J318.5-22"])
-deck = st.selectbox("Deck", ["A", "B", "C", "D", "E", "F", "G", "T"])
-side = st.selectbox("Side", ["P", "S"])
-num = st.number_input("Número de Cabina", min_value=0, max_value=2000, step=1)
+# Título con diseño temático
+st.title("🪐 Predicción de Supervivencia en el Titanic Espacial 🛸")
 
-# Botón de predicción
-if st.button("Predecir"):
+# Subtítulo con un breve texto
+st.subheader("🚀 ¿Sobrevivirías el viaje interestelar? Descúbrelo con nuestro modelo de predicción 🤖")
+
+# Crear sliders y selectboxes con emojis espaciales
+home_planet = st.selectbox("🌍 Planeta de origen", ["Earth", "Europa", "Mars"])
+cryosleep = st.radio("❄️ ¿Estaba en Criosueño?", ["Sí", "No"])
+age = st.slider("👶 Edad", 0, 100, 30)
+room_service = st.slider("🛎️ Room Service", 0, 10000, 0)
+food_court = st.slider("🍔 Food Court", 0, 10000, 0)
+shopping_mall = st.slider("🛒 Shopping Mall", 0, 10000, 0)
+spa = st.slider("🛀 Spa", 0, 10000, 0)
+vr_deck = st.slider("🎮 VR Deck", 0, 10000, 0)
+destination = st.selectbox("🌌 Destino", ["TRAPPIST-1e", "55 Cancri e", "PSO J318.5-22"])
+deck = st.selectbox("🛳️ Deck", ["A", "B", "C", "D", "E", "F", "G", "T"])
+side = st.selectbox("🔄 Side", ["P", "S"])
+num = st.number_input("🔢 Número de Cabina", min_value=0, max_value=2000, step=1)
+
+# Botón para predecir con efecto hover
+if st.button("🌟 Predecir Supervivencia"):
     # Convertir las entradas a los valores correctos que el modelo espera
     cryosleep_val = 1 if cryosleep == "Sí" else 0
     home_planet_val = {"Earth": 0.424, "Europa": 0.626, "Mars": 0.5586}[home_planet]
@@ -48,12 +70,16 @@ if st.button("Predecir"):
     }
 
     # Enviar los datos al servidor Flask
-    response = requests.post(FLASK_API_URL, json=input_data)
+    response = requests.post("http://<tu-servidor>:8080/predictjson", json=input_data)
 
     # Obtener y mostrar la predicción
     prediction = response.json().get('Prediction')
-    
+
     if prediction:
-        st.success('El pasajero sobrevive.')
+        st.success('🟢 ¡El pasajero sobrevivirá la aventura espacial! 🎉')
     else:
-        st.error('El pasajero no sobrevive.')
+        st.error('🔴 Desafortunadamente, el pasajero no sobrevivirá. 💫')
+
+# Pie de página con información adicional
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("✨ *AAAAAAAAAAAAA* 🛸")
