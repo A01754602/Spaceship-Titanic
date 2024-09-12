@@ -1,10 +1,9 @@
-# Librerías de Python
 from flask import Flask, request, jsonify
 import numpy as np
 import joblib
 
-# Cargar el modelo entrenado (clasificador de votación en este caso)
-model = joblib.load('voting_model.joblib')  # Guarda tu modelo de votación como archivo joblib
+# Cargar el modelo de votación entrenado
+model = joblib.load('voting_model.joblib')  # Asegúrate de que el archivo del modelo esté guardado como .joblib
 
 # Crear la aplicación Flask
 app = Flask(__name__)
@@ -12,10 +11,9 @@ app = Flask(__name__)
 # Definir la ruta de predicción
 @app.route('/predictjson', methods=['POST'])
 def predictjson():
-    # Procesar los datos de entrada
-    data = request.json
-    
-    # Extraer las características del pasajero
+    data = request.json  # Recibir los datos en formato JSON
+
+    # Convertir las entradas a un arreglo numpy para procesarlas
     input_data = np.array([
         data['HomePlanet'],
         data['CryoSleep'],
@@ -31,11 +29,11 @@ def predictjson():
         data['Num']
     ])
 
-    # Realizar la predicción con el modelo cargado
-    result = model.predict(input_data.reshape(1, -1))
+    # Realizar la predicción utilizando el modelo cargado
+    prediction = model.predict(input_data.reshape(1, -1))
 
-    # Enviar la respuesta como un JSON
-    return jsonify({'Prediction': bool(result[0])})
+    # Devolver la predicción como JSON
+    return jsonify({'Prediction': bool(prediction[0])})
 
 # Iniciar el servidor Flask
 if __name__ == '__main__':

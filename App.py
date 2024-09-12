@@ -2,41 +2,29 @@ import streamlit as st
 import numpy as np
 import requests
 
-# URL de la API Flask que has desplegado
+# URL del servidor Flask
 FLASK_API_URL = "http://<tu-servidor>:8080/predictjson"
 
-# Título de la app
-st.title("Predicción de Supervivencia en Spaceship Titanic")
+# Título de la aplicación
+st.title("Predicción de Supervivencia en el Titanic Espacial")
 
-# Crear los sliders y entradas de datos
-
-# Selección de Planeta de origen
+# Crear controles de entrada (sliders, selectboxes, etc.)
 home_planet = st.selectbox("Planeta de origen", ["Earth", "Europa", "Mars"])
-
-# Selección de Criosueño
 cryosleep = st.radio("¿Estaba en Criosueño?", ["Sí", "No"])
-
-# Edad
 age = st.slider("Edad", 0, 100, 30)
-
-# Servicios del barco
 room_service = st.slider("Room Service", 0, 10000, 0)
 food_court = st.slider("Food Court", 0, 10000, 0)
 shopping_mall = st.slider("Shopping Mall", 0, 10000, 0)
 spa = st.slider("Spa", 0, 10000, 0)
 vr_deck = st.slider("VRDeck", 0, 10000, 0)
-
-# Destino
 destination = st.selectbox("Destino", ["TRAPPIST-1e", "55 Cancri e", "PSO J318.5-22"])
-
-# Cabina
 deck = st.selectbox("Deck", ["A", "B", "C", "D", "E", "F", "G", "T"])
 side = st.selectbox("Side", ["P", "S"])
 num = st.number_input("Número de Cabina", min_value=0, max_value=2000, step=1)
 
-# Botón para enviar los datos
+# Botón de predicción
 if st.button("Predecir"):
-    # Convertir las selecciones a los valores correctos que espera el modelo
+    # Convertir las entradas a los valores correctos que el modelo espera
     cryosleep_val = 1 if cryosleep == "Sí" else 0
     home_planet_val = {"Earth": 0.424, "Europa": 0.626, "Mars": 0.5586}[home_planet]
     destination_val = {"TRAPPIST-1e": 0.4711, "55 Cancri e": 0.61, "PSO J318.5-22": 0.5037}[destination]
@@ -45,7 +33,7 @@ if st.button("Predecir"):
 
     # Crear el JSON con los datos
     input_data = {
-        "HomePlanet": home_planlet_val,
+        "HomePlanet": home_planet_val,
         "CryoSleep": cryosleep_val,
         "Age": age,
         "RoomService": room_service,
@@ -59,14 +47,13 @@ if st.button("Predecir"):
         "Num": num
     }
 
-    # Enviar los datos a la API Flask
+    # Enviar los datos al servidor Flask
     response = requests.post(FLASK_API_URL, json=input_data)
 
     # Obtener y mostrar la predicción
     prediction = response.json().get('Prediction')
     
-    # Mostrar el resultado en la interfaz
-    if prediction == "True":
+    if prediction:
         st.success('El pasajero sobrevive.')
     else:
         st.error('El pasajero no sobrevive.')
