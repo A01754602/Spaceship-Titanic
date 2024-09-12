@@ -69,16 +69,25 @@ if st.button("🌟 Predecir Supervivencia"):
         "Num": num
     }
 
-    # Enviar los datos al servidor Flask
-    response = requests.post("http://<tu-servidor>:8080/predictjson", json=input_data)
+    FLASK_API_URL = "http://34.229.203.135:8080/predictjson"
 
-    # Obtener y mostrar la predicción
-    prediction = response.json().get('Prediction')
+    try:
+        response = requests.post(FLASK_API_URL, json=input_data)
+        response.raise_for_status()  # Verifica que no hubo un error HTTP
+        prediction = response.json().get('Prediction')
 
-    if prediction:
-        st.success('🟢 ¡El pasajero sobrevivirá la aventura espacial! 🎉')
-    else:
-        st.error('🔴 Desafortunadamente, el pasajero no sobrevivirá. 💫')
+        if prediction == 'True':
+            st.success('🟢 ¡El pasajero sobrevivirá la aventura espacial! 🎉')
+        else:
+            st.error('🔴 Desafortunadamente, el pasajero no sobrevivirá. 💫')
+    
+    except requests.exceptions.HTTPError as http_err:
+        st.error(f"HTTP error occurred: {http_err}")  # Muestra el error HTTP
+    except requests.exceptions.RequestException as err:
+        st.error(f"Error occurred: {err}")  # Muestra otros errores de solicitud
+    except ValueError as json_err:
+        st.error(f"Error al decodificar la respuesta JSON: {json_err}")  # Muestra errores de decodificación JSON
+        st.text(response.text)  # Muestra la respuesta recibida (aunque no sea JSON)
 
 # Pie de página con información adicional
 st.markdown("<hr>", unsafe_allow_html=True)
